@@ -2,14 +2,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import AnalLex;
 
 public class Scanner {
 
     private final String source;
 
     private final List<Token> tokens = new ArrayList<>();
-
-    private int linea = 1;
 
     private static final Map<String, TipoToken> palabrasReservadas;
     static {
@@ -44,6 +43,10 @@ public class Scanner {
         palabrasReservadas.put("do", TipoToken.DO);
         palabrasReservadas.put("int", TipoToken.INT);
         palabrasReservadas.put("struct", TipoToken.STRUCT);
+<<<<<<< HEAD
+=======
+        palabrasReservadas.put("_Packed", TipoToken._PACKED);
+>>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         palabrasReservadas.put("double", TipoToken.DOUBLE);
         palabrasReservadas.put("(", TipoToken.PARABRE);
         palabrasReservadas.put(")", TipoToken.PARCIERRA);
@@ -71,6 +74,7 @@ public class Scanner {
         this.source = source;
     }
 
+<<<<<<< HEAD
     List<Token> scanTokens() {
         // Hay que leer todo el archivo
         int i = 0;
@@ -283,6 +287,31 @@ public class Scanner {
         if(!valido){
             Interprete.error(lineaC, "Cadena no cerrada");
         }
+=======
+    List<Token> scanTokens(String lexema, Object literal, int linea) {
+        if(esNum(lexema)){
+            tokens.add(new Token(TipoToken.NUMERO, lexema, literal, linea));
+        }else if(esCadena(lexema)){
+            tokens.add(new Token(TipoToken.CADENA, lexema, literal, linea));
+        }else if(esID(lexema)){
+            tokens.add(new Token(TipoToken.IDENTIFICADOR, lexema, literal, linea));
+        }else{
+            String aux;
+            boolean flag = false;
+            for(Map.Entry<String,TipoToken> palabra : palabrasReservadas.entrySet()){
+                aux = palabra.getKey();
+                if(aux.equalsIgnoreCase(lexema)){
+                    tokens.add(new Token(palabra.getValue(), lexema, literal, linea));
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                Interprete.error(linea, "Lexema desconocido");
+            }
+        }
+
+>>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         return tokens;
     }
 }
