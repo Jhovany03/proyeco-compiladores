@@ -44,29 +44,9 @@ public class Scanner {
         palabrasReservadas.put("struct", TipoToken.STRUCT);
         palabrasReservadas.put("_Packed", TipoToken._PACKED);
         palabrasReservadas.put("double", TipoToken.DOUBLE);
-        palabrasReservadas.put("(", TipoToken.PARABRE);
-        palabrasReservadas.put(")", TipoToken.PARCIERRA);
-        palabrasReservadas.put("{", TipoToken.LLAVEABRE);
-        palabrasReservadas.put("}", TipoToken.LLAVECIERAA);
-        palabrasReservadas.put("[", TipoToken.CORABRE);
-        palabrasReservadas.put("]", TipoToken.CORCIERRA);
-        palabrasReservadas.put(",", TipoToken.COMA);
-        palabrasReservadas.put(".", TipoToken.PUNTO);
-        palabrasReservadas.put(";", TipoToken.PUNTOYCOMA);
-        palabrasReservadas.put("-", TipoToken.OPARITMETICOS);
-        palabrasReservadas.put("+", TipoToken.OPARITMETICOS);
-        palabrasReservadas.put("*", TipoToken.OPARITMETICOS);
-        palabrasReservadas.put("/", TipoToken.OPARITMETICOS);
-        palabrasReservadas.put("!=", TipoToken.OPCOMPARACION);
-        palabrasReservadas.put("==", TipoToken.OPCOMPARACION);
-        palabrasReservadas.put("=", TipoToken.IGUAL);
-        palabrasReservadas.put("<", TipoToken.OPCOMPARACION);
-        palabrasReservadas.put("<=", TipoToken.OPCOMPARACION);
-        palabrasReservadas.put(">=", TipoToken.OPCOMPARACION);
-        palabrasReservadas.put(">", TipoToken.OPCOMPARACION);
     }
 
-    Scanner(String source) {
+    public Scanner(String source) {
         this.source = source;
     }
 
@@ -78,13 +58,16 @@ public class Scanner {
         int linea = 1;
         int lugarApuntador = 0; // Variable paar saber la posición en donde nos encontramos y no reiniciar el
                                 // analisis desde el principio
-        boolean valido = false;
+        boolean valido = true;
         int lineaC = 0;
         /*
          * estado 0 para palabras reservadas
          * estado 1 para identificadores
          * estado 2 para numeros
          * estado 3 para cadenas
+         * estado 4 para comentarios largos
+         * estado 5 para comentarios cortos //
+         * estado 6 para caracteres reservados por el lenguaje
          */
         while (i < source.length()) {
             char c = source.charAt(i);
@@ -268,7 +251,7 @@ public class Scanner {
                             lexema = "";
                             lugarApuntador = i;
                             estado = 1;
-                            valido = true;
+                            valido = false;
                         } else {
                             i++;
                             lineaC = i;
@@ -276,11 +259,169 @@ public class Scanner {
                         }
                     }
                     break;
+                case 4:
+                    if (i == lugarApuntador) {
+                        if (c != '/') {
+                            estado = 6;
+                        } else {
+                            i++;
+                        }
+                    } else if (i == lugarApuntador + 1) {
+                        if (c != '*') {
+                            estado = 5;
+                        } else {
+                            i++;
+                        }
+                    } else {
+                        if (c == '*') {
+                            i++;
+                        } else if (c == '/') {
+                            lexema = "";
+                            lugarApuntador = i;
+                            estado = 1;
+                            valido = false;
+                        } else {
+                            i++;
+                            lineaC = i;
+                        }
+                    }
+                    break;
+                case 5:
+                    if (i == lugarApuntador) {
+                        if (c != '/') {
+                            estado = 6;
+                        } else {
+                            i++;
+                        }
+                    } else if (i == lugarApuntador + 1) {
+                        if (c != '/') {
+                            estado = 7;
+                        } else {
+                            i++;
+                        }
+                    } else {
+                        if (c != '\12') {
+                            i++;
+                        } else {
+                            lugarApuntador = i;
+                        }
+                    }
+                    break;
+                case 6:
+                    if (c == '(') {
+                        tokens.add(new Token(TipoToken.PARABRE, "(", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == ')') {
+                        tokens.add(new Token(TipoToken.PARCIERRA, ")", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '{') {
+                        tokens.add(new Token(TipoToken.LLAVEABRE, "{", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '}') {
+                        tokens.add(new Token(TipoToken.LLAVECIERAA, "}", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '[') {
+                        tokens.add(new Token(TipoToken.CORABRE, "[", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == ']') {
+                        tokens.add(new Token(TipoToken.CORCIERRA, "]", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == ',') {
+                        tokens.add(new Token(TipoToken.COMA, ",", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '.') {
+                        tokens.add(new Token(TipoToken.PUNTO, ".", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == ':') {
+                        tokens.add(new Token(TipoToken.DOSPUNTOS, "(", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == ';') {
+                        tokens.add(new Token(TipoToken.PUNTOYCOMA, ";", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '-' || c == '+' || c == '/' || c == '*') {
+                        tokens.add(new Token(TipoToken.OPARITMETICOS, "(", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '=') {
+                        tokens.add(new Token(TipoToken.IGUAL, "=", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '<') {
+                        tokens.add(new Token(TipoToken.OPCOMPARACION, "<", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '>') {
+                        tokens.add(new Token(TipoToken.OPCOMPARACION, ">", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (i == lugarApuntador) {
+                        if (c == '!') {
+                            i++;
+                            lexema += c;
+                        } else if (c == '=') {
+                            i++;
+                            lexema += c;
+                        } else if (c == '<') {
+                            i++;
+                            lexema += c;
+                        } else if (c == '>') {
+                            i++;
+                            lexema += c;
+                        }
+                    } else if (i == lugarApuntador + 1) {
+                        if (c == '=') {
+                            lexema+=c;
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, lexema, null, linea));
+                            lexema = "";
+                            i++;
+                            lugarApuntador = i;
+                            estado = 1;
+                        }
+                    }
+                    break;
                 default:
                     Interprete.error(linea, "Error caracter no valido");
             }
         }
-        if (!valido) {
+        if (valido) {
             Interprete.error(lineaC, "Cadena no cerrada");
         }
         return tokens;
