@@ -392,6 +392,8 @@ public class Scanner {
                         i++;
                         lugarApuntador = i;
                         estado = 1;
+                    } else if(c == ' ' || c == '\n' || c == '\t'){
+                        i++;
                     } else if (i == lugarApuntador) {
                         if (c == '!') {
                             i++;
