@@ -55,6 +55,7 @@ public class Scanner {
         int i = 0;
         String lexema = "";
         int estado = 0;
+        int estado2 = 0;
         int linea = 1;
         int lugarApuntador = 0; // Variable paar saber la posición en donde nos encontramos y no reiniciar el
                                 // analisis desde el principio
@@ -71,6 +72,7 @@ public class Scanner {
          */
         while (i < source.length()) {
             char c = source.charAt(i);
+           //System.out.println(c + " " + i);
             if (c == '\12')
                 linea++;
             switch (estado) {
@@ -119,7 +121,8 @@ public class Scanner {
                     }
                     break;
                 case 2:
-                    int estado2 = 0;
+                    //System.out.println(estado2);
+                    //System.out.println(Character.isDigit(c));
                     switch (estado2) {
                         case 0:
                             if (c == '+' || c == '-') {
@@ -164,6 +167,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 3:
@@ -176,6 +180,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 4:
@@ -192,6 +197,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 5:
@@ -208,6 +214,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 6:
@@ -220,6 +227,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 7:
@@ -232,6 +240,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         default:
@@ -243,6 +252,7 @@ public class Scanner {
                         if (c != '"') {
                             estado = 4;
                         } else {
+                            valido = false;
                             i++;
                         }
                     } else {
@@ -251,7 +261,7 @@ public class Scanner {
                             lexema = "";
                             lugarApuntador = i;
                             estado = 1;
-                            valido = false;
+                            valido = true;
                         } else {
                             i++;
                             lineaC = i;
@@ -392,7 +402,7 @@ public class Scanner {
                         i++;
                         lugarApuntador = i;
                         estado = 1;
-                    } else if(c == ' ' || c == '\n' || c == '\t'){
+                    } else if(c == ' '){
                         i++;
                     } else if (i == lugarApuntador) {
                         if (c == '!') {
@@ -422,8 +432,10 @@ public class Scanner {
                 default:
                     Interprete.error(linea, "Error caracter no valido");
             }
+            //System.out.println(valido);
         }
-        if (valido) {
+        
+        if (!valido) {
             Interprete.error(lineaC, "Cadena no cerrada");
         }
         return tokens;
