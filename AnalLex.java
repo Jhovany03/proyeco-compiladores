@@ -1,15 +1,5 @@
-<<<<<<< HEAD
-
-public class AnalLex {
-    public static boolean esNum(String num){
-=======
-//Cruz Hernández Jhovanny
-//Díaz Montoya Sebastián
-//3CV15
-
 public class AnalLex {
     public boolean esNum(String num){
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         int i = 0;
         int estado = 0;
         char c;
@@ -114,12 +104,7 @@ public class AnalLex {
         } while(i < num.length()); 
         return bandera;
     }
-
-<<<<<<< HEAD
-    public static boolean esCadena(String cadena){
-=======
     public boolean esCadena(String cadena){
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         if(cadena.charAt(0)=='"'){
             if(cadena.charAt(cadena.length())=='"')
                 return true;
@@ -127,11 +112,7 @@ public class AnalLex {
         return false;
     }
 
-<<<<<<< HEAD
-    public static boolean esComentario(String comentario){
-=======
     public boolean esComentario(String comentario){
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         if(comentario.charAt(0)=='/'&&comentario.charAt(1)=='/'){
             return true;
         }else if(comentario.charAt(0)=='/'&&comentario.charAt(1)=='*'&&comentario.charAt(comentario.charAt(comentario.length()-1))=='*'&&comentario.charAt(comentario.length())=='/'){
@@ -140,11 +121,7 @@ public class AnalLex {
         return false;
     }
 
-<<<<<<< HEAD
-    public static boolean esId(String cadena){
-=======
     public boolean esId(String cadena){
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         int i = 0;
         int estado = 0;
         char c;
@@ -161,19 +138,13 @@ public class AnalLex {
                         break;
                     }
                 case 1:
-<<<<<<< HEAD
-                    if(Character.isLetterOrDigit(c)||c=='_'){
-=======
                     if(Character.isLetterOrDigit(c)){
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
                         estado=2;
                         bandera=true;
                     }else{
                         bandera=false;
                         break;
                     }
-<<<<<<< HEAD
-=======
                 case 2:
                     if(Character.isLetterOrDigit(c)){
                         estado=2;
@@ -188,7 +159,6 @@ public class AnalLex {
                             break;
                         }
                     }
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
                 default:
                     bandera=false;
                     break;
@@ -196,9 +166,4 @@ public class AnalLex {
         }while(i<cadena.length());
         return bandera;
     }
-<<<<<<< HEAD
 }
-=======
-
-}
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7

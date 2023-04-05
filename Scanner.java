@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import AnalLex;
 
 public class Scanner {
 
@@ -43,10 +42,7 @@ public class Scanner {
         palabrasReservadas.put("do", TipoToken.DO);
         palabrasReservadas.put("int", TipoToken.INT);
         palabrasReservadas.put("struct", TipoToken.STRUCT);
-<<<<<<< HEAD
-=======
         palabrasReservadas.put("_Packed", TipoToken._PACKED);
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         palabrasReservadas.put("double", TipoToken.DOUBLE);
         palabrasReservadas.put("(", TipoToken.PARABRE);
         palabrasReservadas.put(")", TipoToken.PARCIERRA);
@@ -74,16 +70,16 @@ public class Scanner {
         this.source = source;
     }
 
-<<<<<<< HEAD
     List<Token> scanTokens() {
         // Hay que leer todo el archivo
         int i = 0;
         String lexema = "";
         int estado = 0;
+        int linea = 1;
         int lugarApuntador = 0; // Variable paar saber la posición en donde nos encontramos y no reiniciar el
                                 // analisis desde el principio
         boolean valido = false;
-        int lineaC=0;
+        int lineaC = 0;
         /*
          * estado 0 para palabras reservadas
          * estado 1 para identificadores
@@ -272,11 +268,11 @@ public class Scanner {
                             lexema = "";
                             lugarApuntador = i;
                             estado = 1;
-                            valido=true;
-                        }else{
+                            valido = true;
+                        } else {
                             i++;
-                            lineaC=i;
-                            lexema+=c;
+                            lineaC = i;
+                            lexema += c;
                         }
                     }
                     break;
@@ -284,34 +280,9 @@ public class Scanner {
                     Interprete.error(linea, "Error caracter no valido");
             }
         }
-        if(!valido){
+        if (!valido) {
             Interprete.error(lineaC, "Cadena no cerrada");
         }
-=======
-    List<Token> scanTokens(String lexema, Object literal, int linea) {
-        if(esNum(lexema)){
-            tokens.add(new Token(TipoToken.NUMERO, lexema, literal, linea));
-        }else if(esCadena(lexema)){
-            tokens.add(new Token(TipoToken.CADENA, lexema, literal, linea));
-        }else if(esID(lexema)){
-            tokens.add(new Token(TipoToken.IDENTIFICADOR, lexema, literal, linea));
-        }else{
-            String aux;
-            boolean flag = false;
-            for(Map.Entry<String,TipoToken> palabra : palabrasReservadas.entrySet()){
-                aux = palabra.getKey();
-                if(aux.equalsIgnoreCase(lexema)){
-                    tokens.add(new Token(palabra.getValue(), lexema, literal, linea));
-                    flag = true;
-                    break;
-                }
-            }
-            if(!flag){
-                Interprete.error(linea, "Lexema desconocido");
-            }
-        }
-
->>>>>>> d3858c913f9d4ef7aabf157e39e3cdc5bfe542c7
         return tokens;
     }
 }
