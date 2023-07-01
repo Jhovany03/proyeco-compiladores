@@ -60,7 +60,12 @@ public class Scanner {
         while (i < source.length()) {
             boolean bandera=false;
             char c = source.charAt(i);
+<<<<<<< HEAD
             if (c == (char)10)
+=======
+           //System.out.println(c + " " + i);
+            if (c == '\12')
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                 linea++;
             switch (estado) {
                 
@@ -121,6 +126,11 @@ public class Scanner {
                 
                 //Numeros
                 case 2:
+<<<<<<< HEAD
+=======
+                    //System.out.println(estado2);
+                    //System.out.println(Character.isDigit(c));
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                     switch (estado2) {
                         case 0:
                             if (c == '+' || c == '-') {
@@ -164,7 +174,11 @@ public class Scanner {
                                 tokens.add(new Token(TipoToken.NUMERO, lexema, linea));
                                 lexema = "";
                                 lugarApuntador = i;
+<<<<<<< HEAD
                                 estado = 3;
+=======
+                                estado = 1;
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                                 estado2 = 0;
                             }
                             break;
@@ -194,7 +208,11 @@ public class Scanner {
                                 tokens.add(new Token(TipoToken.NUMERO, lexema, linea));
                                 lexema = "";
                                 lugarApuntador = i;
+<<<<<<< HEAD
                                 estado = 3;
+=======
+                                estado = 1;
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                                 estado2 = 0;
                             }
                             break;
@@ -237,7 +255,11 @@ public class Scanner {
                                 tokens.add(new Token(TipoToken.NUMERO, lexema, linea));
                                 lexema = "";
                                 lugarApuntador = i;
+<<<<<<< HEAD
                                 estado = 3;
+=======
+                                estado = 1;
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                                 estado2 = 0;
                             }
                             break;
@@ -262,7 +284,11 @@ public class Scanner {
                             tokens.add(new Token(TipoToken.CADENA, lexema, linea));
                             lexema = "";
                             lugarApuntador = i;
+<<<<<<< HEAD
                             estado = 4;
+=======
+                            estado = 1;
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                             valido = true;
                         } else {
                             i++;
@@ -401,6 +427,7 @@ public class Scanner {
                         lugarApuntador = i;
                         estado = 0;
                     } else if (c == '=') {
+<<<<<<< HEAD
                         if(c2=='='){
                             tokens.add(new Token(TipoToken.OPCOMPARACION, "==", linea));
                             lexema = "";
@@ -409,6 +436,45 @@ public class Scanner {
                             estado = 0;
                         }else{
                             tokens.add(new Token(TipoToken.IGUAL, "=", linea));
+=======
+                        tokens.add(new Token(TipoToken.IGUAL, "=", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '<') {
+                        tokens.add(new Token(TipoToken.OPCOMPARACION, "<", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if (c == '>') {
+                        tokens.add(new Token(TipoToken.OPCOMPARACION, ">", null, linea));
+                        lexema = "";
+                        i++;
+                        lugarApuntador = i;
+                        estado = 1;
+                    } else if(c == ' '){
+                        i++;
+                    } else if (i == lugarApuntador) {
+                        if (c == '!') {
+                            i++;
+                            lexema += c;
+                        } else if (c == '=') {
+                            i++;
+                            lexema += c;
+                        } else if (c == '<') {
+                            i++;
+                            lexema += c;
+                        } else if (c == '>') {
+                            i++;
+                            lexema += c;
+                        }
+                    } else if (i == lugarApuntador + 1) {
+                        if (c == '=') {
+                            lexema+=c;
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, lexema, null, linea));
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
                             lexema = "";
                             i++;
                             lugarApuntador = i;
@@ -466,8 +532,12 @@ public class Scanner {
                     Interprete.error(linea, "Error caracter "+ (int)c +" no valido posición i:"+i);
                     bandera=true;
             }
+<<<<<<< HEAD
             if(bandera)
                 break;
+=======
+            //System.out.println(valido);
+>>>>>>> 60587dc5d2bfefc893156b573774e703d0612bde
         }
         
         if (!valido) {
