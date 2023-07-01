@@ -1,3 +1,5 @@
+package interprete;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,37 +15,22 @@ public class Scanner {
     static {
         palabrasReservadas = new HashMap<>();
         palabrasReservadas.put("else", TipoToken.ELSE);
-        palabrasReservadas.put("long", TipoToken.LONG);
-        palabrasReservadas.put("switch", TipoToken.SWITCH);
-        palabrasReservadas.put("break", TipoToken.BREAK);
-        palabrasReservadas.put("enum", TipoToken.ENUM);
-        palabrasReservadas.put("register", TipoToken.REGISTER);
-        palabrasReservadas.put("typedef", TipoToken.TYPEDEF);
-        palabrasReservadas.put("case", TipoToken.CASE);
-        palabrasReservadas.put("extern", TipoToken.EXTERN);
         palabrasReservadas.put("return", TipoToken.RETURN);
-        palabrasReservadas.put("union", TipoToken.UNION);
-        palabrasReservadas.put("char", TipoToken.CHAR);
-        palabrasReservadas.put("float", TipoToken.FLOAT);
-        palabrasReservadas.put("short", TipoToken.SHORT);
-        palabrasReservadas.put("unsigned", TipoToken.UNSIGNED);
-        palabrasReservadas.put("const", TipoToken.CONST);
         palabrasReservadas.put("for", TipoToken.FOR);
-        palabrasReservadas.put("signed", TipoToken.SIGNED);
-        palabrasReservadas.put("void", TipoToken.VOID);
-        palabrasReservadas.put("continue", TipoToken.CONTINUE);
-        palabrasReservadas.put("goto", TipoToken.GOTO);
-        palabrasReservadas.put("sizeof", TipoToken.SIZEOF);
-        palabrasReservadas.put("volatile", TipoToken.VOLATILE);
-        palabrasReservadas.put("default", TipoToken.DEFAULT);
         palabrasReservadas.put("if", TipoToken.IF);
-        palabrasReservadas.put("static", TipoToken.STATIC);
         palabrasReservadas.put("while", TipoToken.WHILE);
-        palabrasReservadas.put("do", TipoToken.DO);
-        palabrasReservadas.put("int", TipoToken.INT);
-        palabrasReservadas.put("struct", TipoToken.STRUCT);
-        palabrasReservadas.put("_Packed", TipoToken._PACKED);
-        palabrasReservadas.put("double", TipoToken.DOUBLE);
+        palabrasReservadas.put("class", TipoToken.CLASS);
+        palabrasReservadas.put("fun", TipoToken.FUN);
+        palabrasReservadas.put("var", TipoToken.VAR);
+        palabrasReservadas.put("id", TipoToken.ID);
+        palabrasReservadas.put("true", TipoToken.VERDAD);
+        palabrasReservadas.put("false", TipoToken.FALSO);
+        palabrasReservadas.put("null", TipoToken.NULO);
+        palabrasReservadas.put("this", TipoToken.ESTE);
+        palabrasReservadas.put("print", TipoToken.PRINT);
+        palabrasReservadas.put("and", TipoToken.AND);
+        palabrasReservadas.put("or", TipoToken.OR);
+        
     }
 
     public Scanner(String source) {
@@ -55,6 +42,7 @@ public class Scanner {
         int i = 0;
         String lexema = "";
         int estado = 0;
+        int estado2 = 0;
         int linea = 1;
         int lugarApuntador = 0; // Variable paar saber la posición en donde nos encontramos y no reiniciar el
                                 // analisis desde el principio
@@ -70,10 +58,13 @@ public class Scanner {
          * estado 6 para caracteres reservados por el lenguaje
          */
         while (i < source.length()) {
+            boolean bandera=false;
             char c = source.charAt(i);
-            if (c == '\12')
+            if (c == (char)10)
                 linea++;
             switch (estado) {
+                
+                //Palabras reservadas
                 case 0:
                     if (Character.isLetter(c)) {
                         lexema = lexema + c;
@@ -87,18 +78,27 @@ public class Scanner {
                             lexema = "";
                         } else {
                             lugarApuntador = i;
-                            tokens.add(new Token(a, lexema, null, linea));
+                            tokens.add(new Token(a, lexema, linea));
                             lexema = "";
                             estado = 1;
                         }
                     }
                     break;
+                
+                
+                //Identificadores
                 case 1:
                     if (i == lugarApuntador) {
                         if (Character.isLetter(c) || c == '_') {
                             estado = 1;
                             lexema = lexema + c;
                             i++;
+                            if(i==source.length()-1){
+                                tokens.add(new Token(TipoToken.ID, lexema, linea));
+                                lexema = "";
+                                lugarApuntador = i;
+                                estado = 2;
+                            }
                         } else {
                             estado = 2;
                             i = lugarApuntador;
@@ -108,18 +108,19 @@ public class Scanner {
                         if (Character.isLetterOrDigit(c) || c == '_') {
                             estado = 1;
                             lexema = lexema + c;
-                            estado = 1;
                             i++;
                         } else {
-                            tokens.add(new Token(TipoToken.IDENTIFICADOR, lexema, null, linea));
+                            tokens.add(new Token(TipoToken.ID, lexema, linea));
                             lexema = "";
                             lugarApuntador = i;
-                            estado = 1;
+                            estado = 2;
                         }
                     }
                     break;
+                
+                
+                //Numeros
                 case 2:
-                    int estado2 = 0;
                     switch (estado2) {
                         case 0:
                             if (c == '+' || c == '-') {
@@ -160,10 +161,11 @@ public class Scanner {
                                 i++;
                                 lexema += c;
                             } else {
-                                tokens.add(new Token(TipoToken.NUMERO, lexema, null, linea));
+                                tokens.add(new Token(TipoToken.NUMERO, lexema, linea));
                                 lexema = "";
                                 lugarApuntador = i;
-                                estado = 1;
+                                estado = 3;
+                                estado2 = 0;
                             }
                             break;
                         case 3:
@@ -176,6 +178,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 4:
@@ -188,10 +191,11 @@ public class Scanner {
                                 i++;
                                 lexema += c;
                             } else {
-                                tokens.add(new Token(TipoToken.NUMERO, lexema, null, linea));
+                                tokens.add(new Token(TipoToken.NUMERO, lexema, linea));
                                 lexema = "";
                                 lugarApuntador = i;
-                                estado = 1;
+                                estado = 3;
+                                estado2 = 0;
                             }
                             break;
                         case 5:
@@ -208,6 +212,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 6:
@@ -220,6 +225,7 @@ public class Scanner {
                                 lexema = "";
                                 lugarApuntador = i;
                                 estado = 1;
+                                estado2 = 0;
                             }
                             break;
                         case 7:
@@ -228,30 +234,36 @@ public class Scanner {
                                 i++;
                                 lexema += c;
                             } else {
-                                tokens.add(new Token(TipoToken.NUMERO, lexema, null, linea));
+                                tokens.add(new Token(TipoToken.NUMERO, lexema, linea));
                                 lexema = "";
                                 lugarApuntador = i;
-                                estado = 1;
+                                estado = 3;
+                                estado2 = 0;
                             }
                             break;
                         default:
                             estado = 1;
                     }
                     break;
+                
+                
+                //Cadenas
                 case 3:
                     if (i == lugarApuntador) {
                         if (c != '"') {
                             estado = 4;
                         } else {
+                            valido = false;
                             i++;
                         }
                     } else {
                         if (c == '"') {
-                            tokens.add(new Token(TipoToken.CADENA, lexema, null, linea));
+                            i++;
+                            tokens.add(new Token(TipoToken.CADENA, lexema, linea));
                             lexema = "";
                             lugarApuntador = i;
-                            estado = 1;
-                            valido = false;
+                            estado = 4;
+                            valido = true;
                         } else {
                             i++;
                             lineaC = i;
@@ -259,6 +271,9 @@ public class Scanner {
                         }
                     }
                     break;
+                
+                
+                //Comentarios largos
                 case 4:
                     if (i == lugarApuntador) {
                         if (c != '/') {
@@ -277,15 +292,19 @@ public class Scanner {
                             i++;
                         } else if (c == '/') {
                             lexema = "";
+                            i++;
                             lugarApuntador = i;
-                            estado = 1;
-                            valido = false;
+                            estado = 6;
+                            valido = true;
                         } else {
                             i++;
                             lineaC = i;
                         }
                     }
                     break;
+                
+                
+                //Comentarios cortos
                 case 5:
                     if (i == lugarApuntador) {
                         if (c != '/') {
@@ -307,121 +326,151 @@ public class Scanner {
                         }
                     }
                     break;
+                
+                
+                //Caracteres
                 case 6:
+                    char c2 = '\0';
+                    if(i+1<source.length()){
+                        c2 = source.charAt(i+1);
+                    }
                     if (c == '(') {
-                        tokens.add(new Token(TipoToken.PARABRE, "(", null, linea));
+                        tokens.add(new Token(TipoToken.PARABRE, "(", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == ')') {
-                        tokens.add(new Token(TipoToken.PARCIERRA, ")", null, linea));
+                        tokens.add(new Token(TipoToken.PARCIERRA, ")", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == '{') {
-                        tokens.add(new Token(TipoToken.LLAVEABRE, "{", null, linea));
+                        tokens.add(new Token(TipoToken.LLAVEABRE, "{", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == '}') {
-                        tokens.add(new Token(TipoToken.LLAVECIERAA, "}", null, linea));
+                        tokens.add(new Token(TipoToken.LLAVECIERRA, "}", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == '[') {
-                        tokens.add(new Token(TipoToken.CORABRE, "[", null, linea));
+                        tokens.add(new Token(TipoToken.CORABRE, "[", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == ']') {
-                        tokens.add(new Token(TipoToken.CORCIERRA, "]", null, linea));
+                        tokens.add(new Token(TipoToken.CORCIERRA, "]", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == ',') {
-                        tokens.add(new Token(TipoToken.COMA, ",", null, linea));
+                        tokens.add(new Token(TipoToken.COMA, ",", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == '.') {
-                        tokens.add(new Token(TipoToken.PUNTO, ".", null, linea));
+                        tokens.add(new Token(TipoToken.PUNTO, ".", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == ':') {
-                        tokens.add(new Token(TipoToken.DOSPUNTOS, "(", null, linea));
+                        tokens.add(new Token(TipoToken.DOSPUNTOS, "(", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == ';') {
-                        tokens.add(new Token(TipoToken.PUNTOYCOMA, ";", null, linea));
+                        tokens.add(new Token(TipoToken.PUNTOYCOMA, ";", linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == '-' || c == '+' || c == '/' || c == '*') {
-                        tokens.add(new Token(TipoToken.OPARITMETICOS, "(", null, linea));
+                        tokens.add(new Token(TipoToken.OPARITMETICOS, ""+c, linea));
                         lexema = "";
                         i++;
                         lugarApuntador = i;
-                        estado = 1;
+                        estado = 0;
                     } else if (c == '=') {
-                        tokens.add(new Token(TipoToken.IGUAL, "=", null, linea));
-                        lexema = "";
-                        i++;
-                        lugarApuntador = i;
-                        estado = 1;
-                    } else if (c == '<') {
-                        tokens.add(new Token(TipoToken.OPCOMPARACION, "<", null, linea));
-                        lexema = "";
-                        i++;
-                        lugarApuntador = i;
-                        estado = 1;
-                    } else if (c == '>') {
-                        tokens.add(new Token(TipoToken.OPCOMPARACION, ">", null, linea));
-                        lexema = "";
-                        i++;
-                        lugarApuntador = i;
-                        estado = 1;
-                    } else if (i == lugarApuntador) {
-                        if (c == '!') {
-                            i++;
-                            lexema += c;
-                        } else if (c == '=') {
-                            i++;
-                            lexema += c;
-                        } else if (c == '<') {
-                            i++;
-                            lexema += c;
-                        } else if (c == '>') {
-                            i++;
-                            lexema += c;
-                        }
-                    } else if (i == lugarApuntador + 1) {
-                        if (c == '=') {
-                            lexema+=c;
-                            tokens.add(new Token(TipoToken.OPCOMPARACION, lexema, null, linea));
+                        if(c2=='='){
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, "==", linea));
+                            lexema = "";
+                            i+=2;
+                            lugarApuntador = i+1;
+                            estado = 0;
+                        }else{
+                            tokens.add(new Token(TipoToken.IGUAL, "=", linea));
                             lexema = "";
                             i++;
                             lugarApuntador = i;
-                            estado = 1;
+                            estado = 0;
                         }
+                    } else if (c == '<') {
+                        if(c2=='='){
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, "==", linea));
+                            lexema = "";
+                            i+=2;
+                            lugarApuntador = i+1;
+                            estado = 0;
+                        }else{
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, "<", linea));
+                            lexema = "";
+                            i++;
+                            lugarApuntador = i;
+                            estado = 0;
+                        }
+                    } else if (c == '>') {
+                        if(c2=='='){
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, "==", linea));
+                            lexema = "";
+                            i+=2;
+                            lugarApuntador = i+1;
+                            estado = 0;
+                        }else{
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, ">", linea));
+                            lexema = "";
+                            i++;
+                            lugarApuntador = i;
+                            estado = 0;
+                        }
+                    } else if (c == '!') {
+                        if(c2=='='){
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, "==", linea));
+                            lexema = "";
+                            i+=2;
+                            lugarApuntador = i+1;
+                            estado = 0;
+                        }else{
+                            tokens.add(new Token(TipoToken.OPCOMPARACION, "!", linea));
+                            lexema = "";
+                            i++;
+                            lugarApuntador = i;
+                            estado = 0;
+                        }
+                    } else if(c == (char)32){
+                        i++;
+                        estado = 0;
+                        lugarApuntador = i;
                     }
                     break;
                 default:
-                    Interprete.error(linea, "Error caracter no valido");
+                    Interprete.error(linea, "Error caracter "+ (int)c +" no valido posición i:"+i);
+                    bandera=true;
             }
+            if(bandera)
+                break;
         }
-        if (valido) {
+        
+        if (!valido) {
             Interprete.error(lineaC, "Cadena no cerrada");
         }
         return tokens;

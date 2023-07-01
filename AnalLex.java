@@ -1,3 +1,5 @@
+package interprete;
+
 public class AnalLex {
     public boolean esNum(String num){
         int i = 0;

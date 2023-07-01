@@ -1,3 +1,5 @@
+package interprete;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -51,6 +53,8 @@ public class Interprete {
         for(Token token : tokens){
             System.out.println(token);
         }
+        Parser parser = new Parser(tokens);
+        parser.parse();
     }
 
     /*

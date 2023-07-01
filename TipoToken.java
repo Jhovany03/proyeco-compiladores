@@ -1,3 +1,5 @@
+package interprete;
+
 public enum TipoToken {
     // Crear un tipoToken por palabra reservada
     // Crear un tipoToken: identificador, una cadena y numero
@@ -5,12 +7,13 @@ public enum TipoToken {
 
 
     // Palabras clave:
-    ELSE, LONG, SWITCH, BREAK, ENUM, REGISTER, TYPEDEF, CASE, EXTERN, RETURN, UNION, CHAR, FLOAT, SHORT, UNSIGNED,
-    CONST, FOR, SIGNED, VOID, CONTINUE, GOTO, SIZEOF, VOLATILE, DEFAULT, IF, STATIC, WHILE, DO, INT, STRUCT, _PACKED,
-    DOUBLE,
+    ELSE, LONG, RETURN, FOR, IF, WHILE,
     //Caracteres especiales
-    OPCOMPARACION, PARABRE, PARCIERRA, CORABRE, CORCIERRA, LLAVEABRE, LLAVECIERAA, CADENA, IDENTIFICADOR, NUMERO,
+    OPCOMPARACION, PARABRE, PARCIERRA, CORABRE, CORCIERRA, LLAVEABRE, LLAVECIERRA, CADENA, IDENTIFICADOR, NUMERO,
     COMA, PUNTO, PUNTOYCOMA, DOSPUNTOS, OPARITMETICOS, IGUAL,
+
+    //especiales
+    CLASS, FUN, VAR, ID, VERDAD, FALSO, NULO, ESTE, SUPERR, PRINT, OR, AND, EPSILON,
 
     // Final de cadena
     EOF
